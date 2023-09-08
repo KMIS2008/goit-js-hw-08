@@ -6,17 +6,18 @@ const CURRENT_TIME_KEY = 'videoplayer-current-time';
 const iframe = document.querySelector('iframe');
 const player = new Player(iframe);
 
-player.on('timeupdate ', throttle (event => {
-    localStorage.setItem(CURRENT_TIME_KEY, JSON.stringify(event.seconds))
-}, 1000));
 
-// player.getVideoTitle().then(function(title) {
-//     console.log('title:', title);
-// });
+const getTime = function (currentTime) {
+    const seconds = currentTime.seconds;
+    localStorage.setItem(CURRENT_TIME_KEY, JSON.stringify(currentTime.seconds));
+  };
+  
+  player.on('timeupdate', throttle(getTime, 1000));
+  
+  player.setCurrentTime(JSON.parse(localStorage.getItem(CURRENT_TIME_KEY)) || 0).catch(function (error) {
+    console.log('error');
+  });
 
 
-player.setCurrentTime(JSON.parse(localStorage.getItem(CURRENT_TIME_KEY)) || 0).catch(function (error) {
-    console.error(error)
-});
 
 
